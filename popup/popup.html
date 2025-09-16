@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>DeepShare</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <a href="https://github.com/Yorick-Ryu/deep-share" target="_blank" class="github-link">
+    <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path
+        d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  </a>
+
+  <div class="popup-container">
+    <!-- Sidebar with tabs -->
+    <div class="sidebar">
+      <div class="title-container">
+        <img src="../icons/icon256.png" alt="Banana Peel" class="title-icon">
+        <a href="https://ds.rick216.cn/" target="_blank" style="text-decoration: none; color: inherit;">
+          <h1>Banana Peel</h1>
+        </a>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="settings-tab" id="settingsTabBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span id="settingsTabLabel">设置</span>
+        </button>
+
+        <button class="tab-btn sponsor-tab-btn" data-tab="sponsor-tab" id="sponsorTabBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+            </path>
+          </svg>
+          <span id="sponsorTabLabel">赞助</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="content">
+      <!-- Settings Tab Content -->
+      <div class="tab-content active" id="settings-tab">
+        <h2 id="settingsTitle">设置</h2>
+
+        <p class="feature-explanation" id="settingsFeatureExplanation">配置服务器地址和AI模型，修改后将立即应用到扩展程序中。</p>
+
+        <div class="form-group">
+          <label for="serverUrl" id="serverUrlLabel">服务器地址</label>
+          <input type="text" id="serverUrl" placeholder="http://127.0.0.1:7001">
+          <span class="form-hint" id="serverUrlHint">输入您的服务器地址，支持HTTP和HTTPS协议</span>
+        </div>
+
+        <div class="form-group">
+          <label for="modelSelect" id="modelSelectLabel">处理模型</label>
+          <select id="modelSelect">
+            <option value="isnet-general-use">isnet-general-use (默认)</option>
+          </select>
+          <span class="form-hint" id="modelSelectHint">选择用于背景移除的AI模型</span>
+        </div>
+
+        <div class="form-group">
+          <button id="getModels" class="secondary-btn">获取可用模型</button>
+          <span id="connectionStatus" class="form-hint"></span>
+        </div>
+      </div>
+
+      <!-- Sponsor Tab Content -->
+      <div class="tab-content" id="sponsor-tab">
+        <h2 id="sponsorTabTitle">Sponsor</h2>
+
+        <div class="sponsor-content">
+          <p class="sponsor-description" id="sponsorTitle">Thanks for using! If you find it helpful, feel free to
+            sponsor via WeChat QR code 😊</p>
+          <img src="../icons/sponsor-code.png" alt="Sponsor QR Code" class="sponsor-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

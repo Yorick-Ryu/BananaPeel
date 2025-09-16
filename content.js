@@ -1,0 +1,181 @@
+function showOrUpdateModal(content, isUpdate = false) {
+  let modal = document.getElementById("banana-peel-modal");
+  const modalBody = modal ? modal.querySelector(".banana-peel-modal-body") : null;
+
+  if (modal && modalBody && isUpdate) {
+    // If modal exists and this is an update, just change the body content
+    modalBody.innerHTML = content;
+  } else {
+    // If modal doesn't exist, create it from scratch
+    if (modal) {
+      modal.remove();
+    }
+    
+    modal = document.createElement("div");
+    modal.id = "banana-peel-modal";
+    modal.className = "banana-peel-modal";
+    modal.innerHTML = `
+      <div class="banana-peel-modal-content">
+        <div class="banana-peel-modal-header">
+          <div class="banana-peel-title">
+            <img src="${chrome.runtime.getURL("icons/icon256.png")}" class="banana-peel-icon">
+            <span>Banana Peel</span>
+          </div>
+          <div class="banana-peel-actions">
+            <span id="banana-peel-download-action" style="display: none;">&#x2913;</span>
+            <span id="banana-peel-close-action">&times;</span>
+          </div>
+        </div>
+        <div class="banana-peel-modal-body">
+          ${content}
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+
+    const closeModal = () => {
+      const modalElement = document.getElementById("banana-peel-modal");
+      if (modalElement) {
+        modalElement.remove();
+      }
+    };
+
+    document.getElementById("banana-peel-close-action").addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if (e.target.id === "banana-peel-modal") {
+            closeModal();
+        }
+    });
+
+    makeDraggable(modal.querySelector(".banana-peel-modal-content"), modal.querySelector(".banana-peel-modal-header"));
+  }
+}
+
+function makeDraggable(element, dragHandle) {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  
+  dragHandle.onmousedown = dragMouseDown;
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    element.style.top = (element.offsetTop - pos2) + "px";
+    element.style.left = (element.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "showLoadingModal") {
+    const loadingContent = `
+      <p>Processing image...</p>
+      <div class="banana-peel-loader"></div>
+    `;
+    showOrUpdateModal(loadingContent, false); // Create new modal
+  } else if (request.action === "updateModalWithImage") {
+    const imageContent = `
+      <img id="banana-peel-result-image" src="${request.imageUrl}" alt="Processed Image">
+    `;
+    showOrUpdateModal(imageContent, true); // Update existing modal
+
+    const downloadAction = document.getElementById("banana-peel-download-action");
+    downloadAction.style.display = "inline";
+    downloadAction.onclick = () => {
+      const a = document.createElement("a");
+      a.href = request.imageUrl;
+      a.download = "background-removed-image.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+  } else if (request.action === "showErrorInModal") {
+      const errorContent = `<p>An error occurred: ${request.error}</p>`;
+      showOrUpdateModal(errorContent, true); // Update existing modal
+  }
+});
+
+function makeDraggable(element, dragHandle) {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  
+  dragHandle.onmousedown = dragMouseDown;
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    element.style.top = (element.offsetTop - pos2) + "px";
+    element.style.left = (element.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "showLoadingModal") {
+    const loadingContent = `
+      <p>Processing image...</p>
+      <div class="banana-peel-loader"></div>
+    `;
+    showModal(loadingContent);
+  } else if (request.action === "updateModalWithImage") {
+    const imageContent = `
+      <img id="banana-peel-result-image" src="${request.imageUrl}" alt="Processed Image">
+    `;
+    showModal(imageContent);
+
+    const downloadAction = document.getElementById("banana-peel-download-action");
+    downloadAction.style.display = "inline";
+    downloadAction.onclick = () => {
+      const a = document.createElement("a");
+      a.href = request.imageUrl;
+      a.download = "background-removed-image.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+  } else if (request.action === "showErrorInModal") {
+      const errorContent = `<p>An error occurred: ${request.error}</p>`;
+      showModal(errorContent);
+  }
+});

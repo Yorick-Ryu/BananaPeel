@@ -1,0 +1,358 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --border-color: #dddddd;
+  --input-bg: #ffffff;
+  --primary-color: #F0B734;
+  --primary-hover: #E6A91F;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --sidebar-bg: #f8f9fa;
+  --tab-active-bg: #ffffff;
+  --tab-hover-bg: #f0f2f5;
+  --error-color: #f44336;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1e1e1e;
+    --text-color: #ffffff;
+    --text-secondary: #aaaaaa;
+    --border-color: #333333;
+    --input-bg: #2d2d2d;
+    --card-bg: #2d2d2d;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --sidebar-bg: #252525;
+    --tab-active-bg: #1e1e1e;
+    --tab-hover-bg: #2a2a2a;
+  }
+}
+
+body {
+  width: 600px;
+  /* Increased width */
+  height: 500px;
+  /* Set a fixed height */
+  padding: 0;
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+/* Popup container */
+.popup-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 180px;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 16px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.title-container h1 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.title-icon {
+  width: 24px;
+  height: auto;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 0;
+  transition: background-color 0.2s ease;
+}
+
+.tab-btn:hover {
+  background-color: var(--tab-hover-bg);
+}
+
+.tab-btn.active {
+  background-color: var(--tab-active-bg);
+  color: var(--primary-color);
+  font-weight: 500;
+  border-left: 3px solid var(--primary-color);
+}
+
+.tab-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.content h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* Form elements */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.feature-explanation {
+  margin-top: -8px;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.form-hint a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-hint a:hover {
+  text-decoration: underline;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+input[type="text"]:disabled,
+input[type="password"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+
+button {
+  padding: 8px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+.checkbox-group {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-group:last-child {
+  margin-bottom: 0;
+}
+
+.checkbox-group label {
+  margin: 0;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.checkbox-group input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-group input[type="checkbox"] {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+  }
+}
+
+.radio-group {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.radio-option label {
+  margin: 0;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.github-link {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.github-link:hover {
+  color: var(--text-color);
+}
+
+.github-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Sponsor tab styles */
+.sponsor-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sponsor-description {
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.sponsor-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: auto;
+}
+
+.secondary-btn:hover {
+  background: rgba(77, 107, 254, 0.1);
+}
+
+.purchase-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.purchase-link:hover {
+  text-decoration: underline;
+}
+
+
