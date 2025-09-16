@@ -1,7 +1,10 @@
 // Initialize and load settings
 document.addEventListener('DOMContentLoaded', () => {
-  // Load saved settings
-  loadSettings();
+  // Load saved settings and then fetch models
+  loadSettings(() => {
+    // Automatically fetch models after settings are loaded
+    fetchModelsFromServer();
+  });
 
   // Set up tab switching
   setupTabs();
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to load saved settings
-function loadSettings() {
+function loadSettings(callback) {
   chrome.storage.sync.get([
     'serverUrl',
     'selectedModel'
@@ -28,14 +31,12 @@ function loadSettings() {
     // Server URL setting
     document.getElementById('serverUrl').value = data.serverUrl || 'http://127.0.0.1:7001';
     
-    // Model selection setting
-    const modelSelect = document.getElementById('modelSelect');
-    if (data.selectedModel) {
-      // Check if the saved model exists in the dropdown
-      const option = modelSelect.querySelector(`option[value="${data.selectedModel}"]`);
-      if (option) {
-        modelSelect.value = data.selectedModel;
-      }
+    // Store the selected model for later use in fetchModelsFromServer
+    window.savedSelectedModel = data.selectedModel;
+    
+    // Call the callback function if provided
+    if (callback && typeof callback === 'function') {
+      callback();
     }
   });
 }
@@ -88,8 +89,14 @@ function setupAutoSave() {
   const modelSelect = document.getElementById('modelSelect');
 
   // Add change event listeners
-  serverUrlInput.addEventListener('change', saveSettings);
-  serverUrlInput.addEventListener('input', debounce(saveSettings, 500));
+  serverUrlInput.addEventListener('change', () => {
+    saveSettings();
+    fetchModelsFromServer(); // Re-fetch models when server URL changes
+  });
+  serverUrlInput.addEventListener('input', debounce(() => {
+    saveSettings();
+    fetchModelsFromServer(); // Re-fetch models when server URL changes
+  }, 500));
   modelSelect.addEventListener('change', saveSettings);
 }
 
@@ -106,97 +113,99 @@ function debounce(func, delay) {
 
 // Set up other UI elements
 function setupUIElements() {
-  // Set up get models button
-  const getModelsBtn = document.getElementById('getModels');
+  // No additional UI setup needed since we removed the get models button
+}
+
+// Function to automatically fetch models from server
+async function fetchModelsFromServer() {
   const connectionStatus = document.getElementById('connectionStatus');
   const modelSelect = document.getElementById('modelSelect');
+  const serverUrl = document.getElementById('serverUrl').value.trim();
+  
+  if (!serverUrl) {
+    // Don't show error for empty server URL on startup
+    return;
+  }
 
-  getModelsBtn.addEventListener('click', async () => {
-    const serverUrl = document.getElementById('serverUrl').value.trim();
-    
-    if (!serverUrl) {
-      connectionStatus.textContent = '请输入服务器地址';
-      connectionStatus.style.color = 'var(--error-color)';
-      return;
-    }
+  // Hide status initially
+  connectionStatus.style.display = 'none';
 
-    // Show loading state
-    getModelsBtn.disabled = true;
-    getModelsBtn.textContent = '获取中...';
-    connectionStatus.textContent = '';
+  try {
+    // Get available models from the server
+    const response = await fetch(`${serverUrl}/models`, {
+      method: 'GET',
+      timeout: 10000
+    });
 
-    try {
-      // Get available models from the server
-      const response = await fetch(`${serverUrl}/models`, {
-        method: 'GET',
-        timeout: 10000
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Extract models array from response - expecting {"models": [...]} format
-        const models = data.models;
-        
-        // Clear existing options except the default one
-        const currentValue = modelSelect.value;
-        modelSelect.innerHTML = '';
-        
-        // Add models to dropdown
-        if (Array.isArray(models) && models.length > 0) {
-          models.forEach(model => {
-            const option = document.createElement('option');
-            
-            // Handle both old format (string) and new format (object with name and description)
-            if (typeof model === 'string') {
-              // Old format: model is just a string
-              option.value = model;
-              option.textContent = model + (model === 'isnet-general-use' ? ' (默认)' : '');
-            } else if (model && model.name) {
-              // New format: model is an object with name and description
-              option.value = model.name;
-              option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? ' (默认)' : '');
-            }
-            
-            modelSelect.appendChild(option);
-          });
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Extract models array from response - expecting {"models": [...]} format
+      const models = data.models;
+      
+      // Clear existing options except the default one
+      const currentValue = modelSelect.value;
+      modelSelect.innerHTML = '';
+      
+      // Add models to dropdown
+      if (Array.isArray(models) && models.length > 0) {
+        models.forEach(model => {
+          const option = document.createElement('option');
           
-          // Extract model names for comparison
-          const modelNames = models.map(model => typeof model === 'string' ? model : model.name);
-          
-          // Restore previous selection if it still exists
-          if (currentValue && modelNames.includes(currentValue)) {
-            modelSelect.value = currentValue;
-          } else {
-            // Set to default if available
-            if (modelNames.includes('isnet-general-use')) {
-              modelSelect.value = 'isnet-general-use';
-            } else if (modelNames.length > 0) {
-              modelSelect.value = modelNames[0];
-            }
+          // Handle both old format (string) and new format (object with name and description)
+          if (typeof model === 'string') {
+            // Old format: model is just a string
+            option.value = model;
+            option.textContent = model + (model === 'isnet-general-use' ? ' (默认)' : '');
+          } else if (model && model.name) {
+            // New format: model is an object with name and description
+            option.value = model.name;
+            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? ' (默认)' : '');
           }
           
-          connectionStatus.textContent = `获取成功！找到 ${models.length} 个模型`;
-          connectionStatus.style.color = 'var(--primary-color)';
-          
-          // Save the updated model selection
-          saveSettings();
+          modelSelect.appendChild(option);
+        });
+        
+        // Extract model names for comparison
+        const modelNames = models.map(model => typeof model === 'string' ? model : model.name);
+        
+        // Restore previous selection from storage if it still exists
+        if (window.savedSelectedModel && modelNames.includes(window.savedSelectedModel)) {
+          modelSelect.value = window.savedSelectedModel;
+        } else if (currentValue && modelNames.includes(currentValue)) {
+          // Fallback to current value if saved model is not available
+          modelSelect.value = currentValue;
         } else {
-          connectionStatus.textContent = '服务器未返回有效的模型列表';
-          connectionStatus.style.color = 'var(--error-color)';
+          // Set to default if available
+          if (modelNames.includes('isnet-general-use')) {
+            modelSelect.value = 'isnet-general-use';
+          } else if (modelNames.length > 0) {
+            modelSelect.value = modelNames[0];
+          }
         }
+        
+        // Save the updated model selection
+        saveSettings();
+        
+        // Hide status on success
+        connectionStatus.style.display = 'none';
       } else {
-        connectionStatus.textContent = `获取失败: ${response.status}`;
-        connectionStatus.style.color = 'var(--error-color)';
+        showError('服务器未返回有效的模型列表');
       }
-    } catch (error) {
-      connectionStatus.textContent = `连接失败: ${error.message}`;
-      connectionStatus.style.color = 'var(--error-color)';
-    } finally {
-      getModelsBtn.disabled = false;
-      getModelsBtn.textContent = '获取可用模型';
+    } else {
+      showError(`获取失败: ${response.status}`);
     }
-  });
+  } catch (error) {
+    showError(`连接失败: ${error.message}`);
+  }
+}
+
+// Function to show error messages
+function showError(message) {
+  const connectionStatus = document.getElementById('connectionStatus');
+  connectionStatus.textContent = message;
+  connectionStatus.style.color = 'var(--error-color)';
+  connectionStatus.style.display = 'block';
 }
 
 // Load all i18n text
