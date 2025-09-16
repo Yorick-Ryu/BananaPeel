@@ -55,5 +55,8 @@
   },
   "removeBackground": {
     "message": "Remove Background"
+  },
+  "reprocess": {
+    "message": "Reprocess"
   }
 }

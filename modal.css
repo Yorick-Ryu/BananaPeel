@@ -116,6 +116,10 @@
   font-size: 18px;
 }
 
+#banana-peel-reprocess-action {
+  font-size: 18px;
+}
+
 .banana-peel-actions span:hover {
   color: var(--action-hover);
   background-color: var(--border-color);

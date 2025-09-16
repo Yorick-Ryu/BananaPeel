@@ -5,6 +5,12 @@ function showOrUpdateModal(content, isUpdate = false) {
   if (modal && modalBody && isUpdate) {
     // If modal exists and this is an update, just change the body content
     modalBody.innerHTML = content;
+    
+    // Reset action buttons to their default state
+    const reprocessAction = document.getElementById("banana-peel-reprocess-action");
+    const downloadAction = document.getElementById("banana-peel-download-action");
+    if (reprocessAction) reprocessAction.style.display = "none";
+    if (downloadAction) downloadAction.style.display = "none";
   } else {
     // If modal doesn't exist, create it from scratch
     if (modal) {
@@ -22,8 +28,9 @@ function showOrUpdateModal(content, isUpdate = false) {
             <span>${getLocalizedMessage('extName', 'Banana Peel')}</span>
           </div>
           <div class="banana-peel-actions">
-            <span id="banana-peel-download-action" style="display: none;">&#x2913;</span>
-            <span id="banana-peel-close-action">&times;</span>
+            <span id="banana-peel-reprocess-action" style="display: none;" title="${getLocalizedMessage('reprocess', 'Reprocess')}">&#x21bb;</span>
+            <span id="banana-peel-download-action" style="display: none;" title="Download">&#x2913;</span>
+            <span id="banana-peel-close-action" title="Close">&times;</span>
           </div>
         </div>
         <div class="banana-peel-modal-body">
@@ -97,6 +104,9 @@ function makeDraggable(element, dragHandle) {
   }
 }
 
+// Global variable to store current image URL for reprocessing
+let currentImageUrl = null;
+
 // Get localized messages
 function getLocalizedMessage(key, defaultText) {
   try {
@@ -108,13 +118,19 @@ function getLocalizedMessage(key, defaultText) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "showLoadingModal") {
+    // Store the current image URL for reprocessing
+    currentImageUrl = request.imageUrl;
+    
     const loadingContent = `
       <div class="banana-peel-loading">
         <p>${getLocalizedMessage('processingImage', 'Processing image...')}</p>
         <div class="banana-peel-loader"></div>
       </div>
     `;
-    showOrUpdateModal(loadingContent, false); // Create new modal
+    
+    // If this is a reprocess, update existing modal; otherwise create new one
+    const isUpdate = request.isReprocess || false;
+    showOrUpdateModal(loadingContent, isUpdate);
   } else if (request.action === "updateModalWithImage") {
     const imageContent = `
       <div class="banana-peel-success">
@@ -123,6 +139,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     `;
     showOrUpdateModal(imageContent, true); // Update existing modal
 
+    // Show and setup download action
     const downloadAction = document.getElementById("banana-peel-download-action");
     downloadAction.style.display = "inline";
     downloadAction.onclick = () => {
@@ -133,6 +150,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       a.click();
       document.body.removeChild(a);
     };
+
+    // Show and setup reprocess action
+    const reprocessAction = document.getElementById("banana-peel-reprocess-action");
+    if (currentImageUrl) {
+      reprocessAction.style.display = "inline";
+      reprocessAction.onclick = () => {
+        // Send message to background script to reprocess the image
+        chrome.runtime.sendMessage({
+          action: "processImage",
+          imageUrl: currentImageUrl
+        });
+      };
+    }
   } else if (request.action === "showErrorInModal") {
     const errorContent = `
       <div class="banana-peel-error">

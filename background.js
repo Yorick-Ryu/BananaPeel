@@ -44,57 +44,71 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log('Server URL updated:', serverUrl);
         console.log('Selected model updated:', selectedModel);
         sendResponse({ success: true });
+    } else if (request.action === 'processImage') {
+        // Handle reprocess request from content script
+        processImage(request.imageUrl, sender.tab.id, true); // Mark as reprocess
+        sendResponse({ success: true });
     }
     return true; // Keep message channel open for async response
 });
+
+// Function to process image
+function processImage(imageUrl, tabId, isReprocess = false) {
+  // Show modal with loading indicator
+  chrome.tabs.sendMessage(tabId, { 
+    action: "showLoadingModal",
+    imageUrl: imageUrl,
+    isReprocess: isReprocess
+  });
+
+  fetch(imageUrl)
+    .then(response => response.blob())
+    .then(blob => {
+      const formData = new FormData();
+      formData.append("file", blob, "image.png");
+      formData.append("model", selectedModel);
+
+      return fetch(`${serverUrl}/remove`, {
+        method: "POST",
+        body: formData
+      });
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then(processedBlob => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        chrome.tabs.sendMessage(tabId, {
+          action: "updateModalWithImage",
+          imageUrl: base64data
+        });
+      };
+      reader.readAsDataURL(processedBlob);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      chrome.tabs.sendMessage(tabId, {
+          action: "showErrorInModal",
+          error: error.toString()
+      });
+    });
+}
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "removeBackground") {
     const imageUrl = info.srcUrl;
 
-    // Immediately show modal with loading indicator
+    // Inject content script first
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["content.js"]
     }, () => {
-      chrome.tabs.sendMessage(tab.id, { action: "showLoadingModal" });
+      processImage(imageUrl, tab.id);
     });
-
-    fetch(imageUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        const formData = new FormData();
-        formData.append("file", blob, "image.png");
-        formData.append("model", selectedModel);
-
-        return fetch(`${serverUrl}/remove`, {
-          method: "POST",
-          body: formData
-        });
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-        return response.blob();
-      })
-      .then(processedBlob => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          chrome.tabs.sendMessage(tab.id, {
-            action: "updateModalWithImage",
-            imageUrl: base64data
-          });
-        };
-        reader.readAsDataURL(processedBlob);
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        chrome.tabs.sendMessage(tab.id, {
-            action: "showErrorInModal",
-            error: error.toString()
-        });
-      });
   }
 });

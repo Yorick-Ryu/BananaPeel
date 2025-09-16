@@ -55,5 +55,8 @@
   },
   "removeBackground": {
     "message": "移除背景"
+  },
+  "reprocess": {
+    "message": "重新处理"
   }
 }
