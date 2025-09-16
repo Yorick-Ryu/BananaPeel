@@ -36,6 +36,14 @@ function showOrUpdateModal(content, isUpdate = false) {
       const modalElement = document.getElementById("banana-peel-modal");
       if (modalElement) {
         modalElement.remove();
+        // Remove keyboard event listener when modal is closed
+        document.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        closeModal();
       }
     };
 
@@ -45,6 +53,9 @@ function showOrUpdateModal(content, isUpdate = false) {
             closeModal();
         }
     });
+
+    // Add keyboard event listener for Esc key
+    document.addEventListener("keydown", handleKeyDown);
 
     makeDraggable(modal.querySelector(".banana-peel-modal-content"), modal.querySelector(".banana-peel-modal-header"));
   }
@@ -86,16 +97,29 @@ function makeDraggable(element, dragHandle) {
   }
 }
 
+// Get localized messages
+function getLocalizedMessage(key, defaultText) {
+  try {
+    return chrome.i18n.getMessage(key) || defaultText;
+  } catch (error) {
+    return defaultText;
+  }
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "showLoadingModal") {
     const loadingContent = `
-      <p>Processing image...</p>
-      <div class="banana-peel-loader"></div>
+      <div class="banana-peel-loading">
+        <p>${getLocalizedMessage('processingImage', 'Processing image...')}</p>
+        <div class="banana-peel-loader"></div>
+      </div>
     `;
     showOrUpdateModal(loadingContent, false); // Create new modal
   } else if (request.action === "updateModalWithImage") {
     const imageContent = `
-      <img id="banana-peel-result-image" src="${request.imageUrl}" alt="Processed Image">
+      <div class="banana-peel-success">
+        <img id="banana-peel-result-image" src="${request.imageUrl}" alt="${getLocalizedMessage('processedImage', 'Processed Image')}">
+      </div>
     `;
     showOrUpdateModal(imageContent, true); // Update existing modal
 
@@ -110,72 +134,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       document.body.removeChild(a);
     };
   } else if (request.action === "showErrorInModal") {
-      const errorContent = `<p>An error occurred: ${request.error}</p>`;
-      showOrUpdateModal(errorContent, true); // Update existing modal
-  }
-});
-
-function makeDraggable(element, dragHandle) {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  
-  dragHandle.onmousedown = dragMouseDown;
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    element.style.top = (element.offsetTop - pos2) + "px";
-    element.style.left = (element.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "showLoadingModal") {
-    const loadingContent = `
-      <p>Processing image...</p>
-      <div class="banana-peel-loader"></div>
+    const errorContent = `
+      <div class="banana-peel-error">
+        <p>${getLocalizedMessage('errorOccurred', 'An error occurred')}: ${request.error}</p>
+      </div>
     `;
-    showModal(loadingContent);
-  } else if (request.action === "updateModalWithImage") {
-    const imageContent = `
-      <img id="banana-peel-result-image" src="${request.imageUrl}" alt="Processed Image">
-    `;
-    showModal(imageContent);
-
-    const downloadAction = document.getElementById("banana-peel-download-action");
-    downloadAction.style.display = "inline";
-    downloadAction.onclick = () => {
-      const a = document.createElement("a");
-      a.href = request.imageUrl;
-      a.download = "background-removed-image.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    };
-  } else if (request.action === "showErrorInModal") {
-      const errorContent = `<p>An error occurred: ${request.error}</p>`;
-      showModal(errorContent);
+    showOrUpdateModal(errorContent, true); // Update existing modal
   }
 });

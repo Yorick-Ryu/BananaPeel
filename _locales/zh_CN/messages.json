@@ -43,5 +43,14 @@
   },
   "sponsorTitle": {
     "message": "感谢使用！如果觉得好用，欢迎通过微信二维码赞助支持 😊"
+  },
+  "processingImage": {
+    "message": "正在处理图片..."
+  },
+  "processedImage": {
+    "message": "处理后的图片"
+  },
+  "errorOccurred": {
+    "message": "发生错误"
   }
 }
