@@ -1,3 +1,7 @@
+// Constants
+const DEFAULT_MODEL = 'silueta';
+const DEFAULT_SERVER_URL = 'http://127.0.0.1:7001';
+
 // Initialize and load settings
 document.addEventListener('DOMContentLoaded', () => {
   // Load saved settings and then fetch models
@@ -29,7 +33,7 @@ function loadSettings(callback) {
     'selectedModel'
   ], (data) => {
     // Server URL setting
-    document.getElementById('serverUrl').value = data.serverUrl || 'http://127.0.0.1:7001';
+    document.getElementById('serverUrl').value = data.serverUrl || DEFAULT_SERVER_URL;
     
     // Store the selected model for later use in fetchModelsFromServer
     window.savedSelectedModel = data.selectedModel;
@@ -156,11 +160,11 @@ async function fetchModelsFromServer() {
           if (typeof model === 'string') {
             // Old format: model is just a string
             option.value = model;
-            option.textContent = model + (model === 'isnet-general-use' ? chrome.i18n.getMessage('defaultModel') : '');
+            option.textContent = model + (model === DEFAULT_MODEL ? chrome.i18n.getMessage('defaultModel') : '');
           } else if (model && model.name) {
             // New format: model is an object with name and description
             option.value = model.name;
-            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? chrome.i18n.getMessage('defaultModel') : '');
+            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === DEFAULT_MODEL ? chrome.i18n.getMessage('defaultModel') : '');
           }
           
           modelSelect.appendChild(option);
@@ -177,8 +181,8 @@ async function fetchModelsFromServer() {
           modelSelect.value = currentValue;
         } else {
           // Set to default if available
-          if (modelNames.includes('isnet-general-use')) {
-            modelSelect.value = 'isnet-general-use';
+          if (modelNames.includes(DEFAULT_MODEL)) {
+            modelSelect.value = DEFAULT_MODEL;
           } else if (modelNames.length > 0) {
             modelSelect.value = modelNames[0];
           }

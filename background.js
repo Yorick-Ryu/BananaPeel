@@ -1,6 +1,10 @@
+// Constants
+const DEFAULT_MODEL = 'silueta';
+const DEFAULT_SERVER_URL = 'http://127.0.0.1:7001';
+
 // Store server configuration globally
-let serverUrl = 'http://127.0.0.1:7001'; // Default value
-let selectedModel = 'isnet-general-use'; // Default model
+let serverUrl = DEFAULT_SERVER_URL; // Default value
+let selectedModel = DEFAULT_MODEL; // Default model
 
 // Load server configuration from storage on startup
 chrome.runtime.onStartup.addListener(() => {
@@ -35,8 +39,8 @@ function loadServerConfig() {
 // Listen for messages from popup to update server configuration
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateServerConfig') {
-        serverUrl = request.serverUrl || 'http://127.0.0.1:7001'; // Fallback to default
-        selectedModel = request.selectedModel || 'isnet-general-use'; // Fallback to default
+        serverUrl = request.serverUrl || DEFAULT_SERVER_URL; // Fallback to default
+        selectedModel = request.selectedModel || DEFAULT_MODEL; // Fallback to default
         console.log('Server URL updated:', serverUrl);
         console.log('Selected model updated:', selectedModel);
         sendResponse({ success: true });
