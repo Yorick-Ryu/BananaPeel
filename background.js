@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(() => {
     
     chrome.contextMenus.create({
         id: "removeBackground",
-        title: "Remove Background",
+        title: chrome.i18n.getMessage("removeBackground"),
         contexts: ["image"]
     });
 });

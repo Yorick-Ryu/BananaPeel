@@ -219,6 +219,9 @@ function loadI18nText() {
     sponsorTabBtn.style.display = currentLang.startsWith('zh') ? 'flex' : 'none';
   }
 
+  // Extension title
+  document.getElementById('extTitle').textContent = chrome.i18n.getMessage('extName');
+
   // Tab labels
   document.getElementById('settingsTabLabel').textContent = chrome.i18n.getMessage('settingsTab');
   document.getElementById('sponsorTabLabel').textContent = chrome.i18n.getMessage('sponsorTab');

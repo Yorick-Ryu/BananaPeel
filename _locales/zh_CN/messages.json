@@ -6,7 +6,7 @@
     "message": "通过右键点击图片来去除其背景。"
   },
   "defaultModel": {
-    "message": " (默认)"
+    "message": "(默认)"
   },
   "serverInvalidModels": {
     "message": "服务器未返回有效的模型列表"
@@ -52,5 +52,8 @@
   },
   "errorOccurred": {
     "message": "发生错误"
+  },
+  "removeBackground": {
+    "message": "移除背景"
   }
 }
