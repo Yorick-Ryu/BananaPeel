@@ -156,11 +156,11 @@ async function fetchModelsFromServer() {
           if (typeof model === 'string') {
             // Old format: model is just a string
             option.value = model;
-            option.textContent = model + (model === 'isnet-general-use' ? ' (默认)' : '');
+            option.textContent = model + (model === 'isnet-general-use' ? chrome.i18n.getMessage('defaultModel') : '');
           } else if (model && model.name) {
             // New format: model is an object with name and description
             option.value = model.name;
-            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? ' (默认)' : '');
+            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? chrome.i18n.getMessage('defaultModel') : '');
           }
           
           modelSelect.appendChild(option);
@@ -190,13 +190,13 @@ async function fetchModelsFromServer() {
         // Hide status on success
         connectionStatus.style.display = 'none';
       } else {
-        showError('服务器未返回有效的模型列表');
+        showError(chrome.i18n.getMessage('serverInvalidModels'));
       }
     } else {
-      showError(`获取失败: ${response.status}`);
+      showError(`${chrome.i18n.getMessage('fetchFailed')}: ${response.status}`);
     }
   } catch (error) {
-    showError(`连接失败: ${error.message}`);
+    showError(`${chrome.i18n.getMessage('connectionFailed')}: ${error.message}`);
   }
 }
 
@@ -220,22 +220,22 @@ function loadI18nText() {
   }
 
   // Tab labels
-  document.getElementById('settingsTabLabel').textContent = '设置';
-  document.getElementById('sponsorTabLabel').textContent = '赞助';
-  document.getElementById('sponsorTabTitle').textContent = '赞助';
+  document.getElementById('settingsTabLabel').textContent = chrome.i18n.getMessage('settingsTab');
+  document.getElementById('sponsorTabLabel').textContent = chrome.i18n.getMessage('sponsorTab');
+  document.getElementById('sponsorTabTitle').textContent = chrome.i18n.getMessage('sponsorTab');
 
   // Settings tab
-  document.getElementById('settingsTitle').textContent = '设置';
-  document.getElementById('settingsFeatureExplanation').textContent = '配置服务器地址和AI模型，修改后将立即应用到扩展程序中。';
-  document.getElementById('serverUrlLabel').textContent = '服务器地址';
-  document.getElementById('serverUrlHint').textContent = '输入您的服务器地址，支持HTTP和HTTPS协议';
-  document.getElementById('modelSelectLabel').textContent = '处理模型';
-  document.getElementById('modelSelectHint').textContent = '选择用于背景移除的AI模型';
+  document.getElementById('settingsTitle').textContent = chrome.i18n.getMessage('settingsTitle');
+  document.getElementById('settingsFeatureExplanation').textContent = chrome.i18n.getMessage('settingsFeatureExplanation');
+  document.getElementById('serverUrlLabel').textContent = chrome.i18n.getMessage('serverUrlLabel');
+  document.getElementById('serverUrlHint').textContent = chrome.i18n.getMessage('serverUrlHint');
+  document.getElementById('modelSelectLabel').textContent = chrome.i18n.getMessage('modelSelectLabel');
+  document.getElementById('modelSelectHint').textContent = chrome.i18n.getMessage('modelSelectHint');
 
   // Sponsor tab
   const sponsorTitle = document.getElementById('sponsorTitle');
   if (sponsorTitle) {
-    sponsorTitle.textContent = '感谢使用！如果觉得好用，欢迎通过微信二维码赞助支持 😊';
+    sponsorTitle.textContent = chrome.i18n.getMessage('sponsorTitle');
   }
 }
 

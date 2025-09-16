@@ -4,5 +4,44 @@
   },
   "extDesc": {
     "message": "Remove the background from images by right-clicking on them."
+  },
+  "defaultModel": {
+    "message": " (Default)"
+  },
+  "serverInvalidModels": {
+    "message": "Server did not return a valid model list"
+  },
+  "fetchFailed": {
+    "message": "Fetch failed"
+  },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "settingsTab": {
+    "message": "Settings"
+  },
+  "sponsorTab": {
+    "message": "Sponsor"
+  },
+  "settingsTitle": {
+    "message": "Settings"
+  },
+  "settingsFeatureExplanation": {
+    "message": "Configure server address and AI model. Changes will be applied immediately to the extension."
+  },
+  "serverUrlLabel": {
+    "message": "Server Address"
+  },
+  "serverUrlHint": {
+    "message": "Enter your server address, supports HTTP and HTTPS protocols"
+  },
+  "modelSelectLabel": {
+    "message": "Processing Model"
+  },
+  "modelSelectHint": {
+    "message": "Select the AI model for background removal"
+  },
+  "sponsorTitle": {
+    "message": "Thanks for using! If you find it helpful, feel free to sponsor via WeChat QR code 😊"
   }
 }

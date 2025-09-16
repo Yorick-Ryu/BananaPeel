@@ -32,7 +32,7 @@
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
             <circle cx="12" cy="12" r="3"></circle>
           </svg>
-          <span id="settingsTabLabel">设置</span>
+          <span id="settingsTabLabel"></span>
         </button>
 
         <button class="tab-btn sponsor-tab-btn" data-tab="sponsor-tab" id="sponsorTabBtn">
@@ -42,7 +42,7 @@
               d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
             </path>
           </svg>
-          <span id="sponsorTabLabel">赞助</span>
+          <span id="sponsorTabLabel"></span>
         </button>
       </div>
     </div>
@@ -51,22 +51,22 @@
     <div class="content">
       <!-- Settings Tab Content -->
       <div class="tab-content active" id="settings-tab">
-        <h2 id="settingsTitle">设置</h2>
+        <h2 id="settingsTitle"></h2>
 
-        <p class="feature-explanation" id="settingsFeatureExplanation">配置服务器地址和AI模型，修改后将立即应用到扩展程序中。</p>
+        <p class="feature-explanation" id="settingsFeatureExplanation"></p>
 
         <div class="form-group">
-          <label for="serverUrl" id="serverUrlLabel">服务器地址</label>
+          <label for="serverUrl" id="serverUrlLabel"></label>
           <input type="text" id="serverUrl" placeholder="http://127.0.0.1:7001">
-          <span class="form-hint" id="serverUrlHint">输入您的服务器地址，支持HTTP和HTTPS协议</span>
+          <span class="form-hint" id="serverUrlHint"></span>
         </div>
 
         <div class="form-group">
-          <label for="modelSelect" id="modelSelectLabel">处理模型</label>
+          <label for="modelSelect" id="modelSelectLabel"></label>
           <select id="modelSelect">
-            <option value="isnet-general-use">isnet-general-use (默认)</option>
+            <option value="isnet-general-use">isnet-general-use</option>
           </select>
-          <span class="form-hint" id="modelSelectHint">选择用于背景移除的AI模型</span>
+          <span class="form-hint" id="modelSelectHint"></span>
         </div>
 
         <div id="connectionStatus" class="form-hint error-only" style="display: none;"></div>

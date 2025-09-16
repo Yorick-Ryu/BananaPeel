@@ -4,5 +4,44 @@
   },
   "extDesc": {
     "message": "通过右键点击图片来去除其背景。"
+  },
+  "defaultModel": {
+    "message": " (默认)"
+  },
+  "serverInvalidModels": {
+    "message": "服务器未返回有效的模型列表"
+  },
+  "fetchFailed": {
+    "message": "获取失败"
+  },
+  "connectionFailed": {
+    "message": "连接失败"
+  },
+  "settingsTab": {
+    "message": "设置"
+  },
+  "sponsorTab": {
+    "message": "赞助"
+  },
+  "settingsTitle": {
+    "message": "设置"
+  },
+  "settingsFeatureExplanation": {
+    "message": "配置服务器地址和AI模型，修改后将立即应用到扩展程序中。"
+  },
+  "serverUrlLabel": {
+    "message": "服务器地址"
+  },
+  "serverUrlHint": {
+    "message": "输入您的服务器地址，支持HTTP和HTTPS协议"
+  },
+  "modelSelectLabel": {
+    "message": "处理模型"
+  },
+  "modelSelectHint": {
+    "message": "选择用于背景移除的AI模型"
+  },
+  "sponsorTitle": {
+    "message": "感谢使用！如果觉得好用，欢迎通过微信二维码赞助支持 😊"
   }
 }
