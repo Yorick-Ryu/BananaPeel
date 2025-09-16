@@ -146,20 +146,33 @@ function setupUIElements() {
         if (Array.isArray(models) && models.length > 0) {
           models.forEach(model => {
             const option = document.createElement('option');
-            option.value = model;
-            option.textContent = model + (model === 'isnet-general-use' ? ' (默认)' : '');
+            
+            // Handle both old format (string) and new format (object with name and description)
+            if (typeof model === 'string') {
+              // Old format: model is just a string
+              option.value = model;
+              option.textContent = model + (model === 'isnet-general-use' ? ' (默认)' : '');
+            } else if (model && model.name) {
+              // New format: model is an object with name and description
+              option.value = model.name;
+              option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === 'isnet-general-use' ? ' (默认)' : '');
+            }
+            
             modelSelect.appendChild(option);
           });
           
+          // Extract model names for comparison
+          const modelNames = models.map(model => typeof model === 'string' ? model : model.name);
+          
           // Restore previous selection if it still exists
-          if (currentValue && models.includes(currentValue)) {
+          if (currentValue && modelNames.includes(currentValue)) {
             modelSelect.value = currentValue;
           } else {
             // Set to default if available
-            if (models.includes('isnet-general-use')) {
+            if (modelNames.includes('isnet-general-use')) {
               modelSelect.value = 'isnet-general-use';
-            } else if (models.length > 0) {
-              modelSelect.value = models[0];
+            } else if (modelNames.length > 0) {
+              modelSelect.value = modelNames[0];
             }
           }
           
