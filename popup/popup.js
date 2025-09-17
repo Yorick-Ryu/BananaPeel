@@ -164,7 +164,8 @@ async function fetchModelsFromServer() {
           } else if (model && model.name) {
             // New format: model is an object with name and description
             option.value = model.name;
-            option.textContent = model.name + (model.description ? `(${model.description})` : '') + (model.name === DEFAULT_MODEL ? chrome.i18n.getMessage('defaultModel') : '');
+            const description =  model.desc;
+            option.textContent = model.name + (description ? ` (${description})` : '') + (model.name === DEFAULT_MODEL ? chrome.i18n.getMessage('defaultModel') : '');
           }
           
           modelSelect.appendChild(option);
