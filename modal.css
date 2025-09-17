@@ -41,7 +41,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  pointer-events: none;
   background: var(--modal-backdrop);
   display: flex;
   align-items: center;
@@ -61,6 +61,7 @@
   border: 1px solid var(--border-color);
   overflow: hidden;
   font-family: system-ui, -apple-system, sans-serif;
+  pointer-events: auto;
 }
 
 .banana-peel-modal-header {
