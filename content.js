@@ -24,7 +24,7 @@ function showOrUpdateModal(content, isUpdate = false) {
       <div class="banana-peel-modal-content">
         <div class="banana-peel-modal-header">
           <div class="banana-peel-title">
-            <img src="${chrome.runtime.getURL("icons/icon256.png")}" class="banana-peel-icon">
+            <img src="${chrome.runtime.getURL("icons/icon128.png")}" class="banana-peel-icon">
             <span>${getLocalizedMessage('extName', 'Banana Peel')}</span>
           </div>
           <div class="banana-peel-actions">
