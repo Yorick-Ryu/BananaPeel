@@ -7,7 +7,7 @@
   --primary-color: #F0B734;
   --primary-hover: #E6A91F;
   --card-bg: #ffffff;
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   --sidebar-bg: #f8f9fa;
   --modal-backdrop: transparent;
   --modal-header-bg: #fcfcfc;
@@ -24,7 +24,7 @@
     --text-secondary: #aaaaaa;
     --border-color: #333333;
     --card-bg: #2d2d2d;
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
     --sidebar-bg: #252525;
     --modal-backdrop: transparent;
     --modal-header-bg: #252525;
@@ -108,11 +108,6 @@
   border-radius: 4px;
 }
 
-#banana-peel-close-action {
-  font-size: 24px;
-  font-weight: 300;
-}
-
 #banana-peel-download-action {
   font-size: 18px;
 }
@@ -121,8 +116,13 @@
   font-size: 18px;
 }
 
+#banana-peel-close-action {
+  font-size: 24px;
+  font-weight: 400;
+}
+
 .banana-peel-actions span:hover {
-  color: var(--action-hover);
+  color: var(--primary-color);
   background-color: var(--border-color);
   transform: scale(1.1);
 }
