@@ -114,7 +114,7 @@ function makeDraggable(element, dragHandle) {
 }
 
 // Global variable to store current image URL for reprocessing
-let currentImageUrl = null;
+var currentImageUrl = null;
 
 // Get localized messages
 function getLocalizedMessage(key, defaultText) {
