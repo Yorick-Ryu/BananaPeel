@@ -11,6 +11,7 @@ include_files=(
     "_locales"
     "background.js"
     "content.js"
+    "doubao.js"
     "icons"
     "manifest.json"
     "modal.css"
