@@ -1,6 +1,6 @@
 // Constants
-const DEFAULT_MODEL = 'silueta';
-const DEFAULT_SERVER_URL = 'http://127.0.0.1:7001';
+const DEFAULT_MODEL = 'background-remover';
+const DEFAULT_SERVER_URL = 'https://api.bp.rick216.cn';
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
