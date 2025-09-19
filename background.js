@@ -12,14 +12,16 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Listen for messages from popup to update server configuration
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'updateServerConfig') {
-        // This is kept for the popup to save settings.
-        // The actual processing will read from storage directly.
-        console.log('Server config update message received.');
-        sendResponse({ success: true });
-    } else if (request.action === 'processImage') {
+    if (request.action === 'processImage') {
         // Handle reprocess request from content script
         processImage(request.imageUrl, sender.tab.id, true); // Mark as reprocess
+        sendResponse({ success: true });
+    } else if (request.action === 'downloadImage') {
+        chrome.downloads.download({
+            url: request.imageUrl,
+            filename: 'background-removed-image.png',
+            saveAs: true
+        });
         sendResponse({ success: true });
     }
     return true; // Keep message channel open for async response

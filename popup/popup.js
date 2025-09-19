@@ -258,19 +258,6 @@ function saveSettings() {
   // Save settings and immediately apply to background script
   chrome.storage.sync.set(settings, () => {
     console.log('Settings saved automatically');
-    
-    // Send message to background script to apply changes immediately
-    chrome.runtime.sendMessage({
-      action: 'updateServerConfig',
-      serverUrl: settings.serverUrl,
-      selectedModel: settings.selectedModel
-    }, (response) => {
-      if (chrome.runtime.lastError) {
-        console.log('Background script not available, settings saved for next reload');
-      } else {
-        console.log('Server configuration applied immediately');
-      }
-    });
   });
 }
 

@@ -152,12 +152,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const downloadAction = document.getElementById("banana-peel-download-action");
     downloadAction.style.display = "inline";
     downloadAction.onclick = () => {
-      const a = document.createElement("a");
-      a.href = request.imageUrl;
-      a.download = "background-removed-image.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      chrome.runtime.sendMessage({
+        action: "downloadImage",
+        imageUrl: request.imageUrl
+      });
     };
 
     // Show and setup reprocess action
