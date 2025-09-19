@@ -41,6 +41,10 @@
     {
       "matches": [ "<all_urls>" ],
       "css": [ "modal.css" ]
+    },
+    {
+      "matches": [ "https://www.doubao.com/*" ],
+      "js": [ "doubao.js", "content.js" ]
     }
   ]
 }
