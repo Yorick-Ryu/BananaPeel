@@ -15,12 +15,20 @@ function addRemoveBackgroundOption(menu) {
     }
 
     // Check if our option is already added to prevent duplicates.
-    if (menu.querySelector('.remove-background-option')) {
+    if (menu.querySelector('[data-testid="right_click_remove_background"]')) {
         return;
     }
 
+    // Get the class name from an existing menu item to apply to our new one.
+    const existingItem = menu.querySelector('[data-testid="right_click_copy_image"]');
+    if (!existingItem) {
+        return; // Can't find a template to copy style from.
+    }
+    const menuItemClassName = existingItem.className;
+
+
     const newMenuItem = document.createElement('div');
-    newMenuItem.className = 'context-menu-item-MekMEz remove-background-option';
+    newMenuItem.className = menuItemClassName + ' remove-background-option'; // Keep our custom class for identification
     newMenuItem.dataset.testid = 'right_click_remove_background';
     
     const textNode = document.createTextNode('去除背景');
@@ -64,10 +72,11 @@ const observer = new MutationObserver((mutationsList) => {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(node => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
-                    const menu = node.querySelector('.samantha-dropdown-V3IVHj');
+                    // Use a more generic selector for the menu
+                    const menu = node.querySelector('.semi-dropdown-wrapper');
                     if(menu){
                         addRemoveBackgroundOption(menu);
-                    } else if (node.classList && node.classList.contains('samantha-dropdown-V3IVHj')) {
+                    } else if (node.classList && node.classList.contains('semi-dropdown-wrapper')) {
                         addRemoveBackgroundOption(node);
                     }
                 }
