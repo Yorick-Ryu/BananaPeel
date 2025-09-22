@@ -1,0 +1,1 @@
+Supports both local and cloud-based processing modes
