@@ -51,24 +51,26 @@ async function processImage(imageUrl, tabId, isReprocess = false) {
     formData.append("file", blob, "image.png");
     formData.append("model", selectedModel);
 
-    const removeResponse = await fetch(`${serverUrl}/remove-url`, {
+    const removeResponse = await fetch(`${serverUrl}/remove`, {
       method: "POST",
       body: formData
     });
 
     if (!removeResponse.ok) {
-      const errorData = await removeResponse.json().catch(() => null); // Try to parse error response
-      const errorMessage = errorData?.detail || `Server error: ${removeResponse.status}`;
-      throw new Error(errorMessage);
+      throw new Error(`Server error: ${removeResponse.status}`);
     }
 
-    const result = await removeResponse.json();
-    const processedImageUrl = result.url;
-
-    chrome.tabs.sendMessage(tabId, {
-      action: "updateModalWithImage",
-      imageUrl: processedImageUrl
-    });
+    const processedBlob = await removeResponse.blob();
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      chrome.tabs.sendMessage(tabId, {
+        action: "updateModalWithImage",
+        imageUrl: base64data
+      });
+    };
+    reader.readAsDataURL(processedBlob);
 
   } catch (error) {
     console.error("Error:", error);
