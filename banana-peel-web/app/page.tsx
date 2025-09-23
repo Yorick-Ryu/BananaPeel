@@ -90,7 +90,7 @@ export default function Home() {
               <div className="p-6 bg-[var(--card-bg)] rounded-lg shadow-md">
                 <h4 className="text-xl font-semibold mb-2">🛡️ 两种模式</h4>
                 <p className="text-[var(--text-secondary)]">
-                  可使用我们的免费服务器，或部署私有服务器，保障数据隐私。
+                  可使用我们的免费服务器，或部署私有服务器。
                 </p>
               </div>
             </div>
