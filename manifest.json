@@ -34,18 +34,18 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "modal.css", "icons/icon128.png" ],
+      "resources": [ "scripts/modal.css", "icons/icon128.png" ],
       "matches": [ "<all_urls>" ]
     }
   ],
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "css": [ "modal.css" ]
+      "css": [ "scripts/modal.css" ]
     },
     {
       "matches": [ "https://www.doubao.com/*" ],
-      "js": [ "doubao.js", "content.js" ]
+      "js": [ "scripts/doubao.js", "scripts/content.js" ]
     }
   ]
 }

@@ -88,7 +88,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     // Inject content script first
     chrome.scripting.executeScript({
       target: { tabId: tab.id, allFrames: false },
-      files: ["content.js"]
+      files: ["scripts/content.js"]
     }, () => {
       processImage(imageUrl, tab.id);
     });
