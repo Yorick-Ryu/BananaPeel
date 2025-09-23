@@ -7,7 +7,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <Image
-              src="/icon128.png"
+              src="/icon.png"
               alt="BananaPeel Logo"
               width={32}
               height={32}
