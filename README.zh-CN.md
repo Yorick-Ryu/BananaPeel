@@ -26,7 +26,7 @@
 ## 🚀 安装
 
 1.  从 Edge/Chrome/Firefox 应用商店安装（正在审核中）。
-    - [Edge 外接程序商店]()
+    - [Edge 外接程序商店](https://microsoftedge.microsoft.com/addons/detail/fdheafpfkojjbdgkjeidbnjbpljpejoo)
     - [Chrome 网上应用商店]()
 2.  从源码安装：
     - 下载并解压源码。

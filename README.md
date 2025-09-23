@@ -26,7 +26,7 @@ As a developer, I often use AI tools to generate images for software icons, but 
 ## 🚀 Installation
 
 1.  Install from Edge/Chrome/Firefox Web Store (under review).
-    - [Edge Add-ons Store]()
+    - [Edge Add-ons Store](https://microsoftedge.microsoft.com/addons/detail/fdheafpfkojjbdgkjeidbnjbpljpejoo)
     - [Chrome Web Store]()
 2.  Install from source:
     - Download and unzip the source code.
