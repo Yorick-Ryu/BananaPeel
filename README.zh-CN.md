@@ -41,7 +41,7 @@ BananaPeel 的运行依赖于后端服务。您可以选择使用我们提供的
 
 1.  **从应用商店安装**
     - [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/fdheafpfkojjbdgkjeidbnjbpljpejoo)
-    - [Chrome Web Store]() (审核中)
+    - [Chrome Web Store](http://chromewebstore.google.com/detail/banana-peel/djldpeokcpbkjkpmmichpkcdgpdemadj)
 2.  **从源码安装**
     - 下载并解压[源码](https://github.com/Yorick-Ryu/Banana-Peel/archive/refs/heads/master.zip)。
     - 打开浏览器的扩展管理页面（`edge://extensions` 或 `chrome://extensions`）。
