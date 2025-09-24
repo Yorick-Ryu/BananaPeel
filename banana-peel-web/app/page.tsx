@@ -28,7 +28,7 @@ export default function Home() {
               如何使用
             </a>
             <a
-              href="https://github.com/Yorick-Ryu/Banana-Peel"
+              href="https://github.com/Yorick-Ryu/BananaPeel"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium hover:text-[var(--primary-color)] transition-colors"

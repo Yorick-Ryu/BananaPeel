@@ -42,7 +42,7 @@ Please visit the [rembg-server repository](https://github.com/Yorick-Ryu/rembg-s
     - [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/fdheafpfkojjbdgkjeidbnjbpljpejoo)
     - [Chrome Web Store](http://chromewebstore.google.com/detail/banana-peel/djldpeokcpbkjkpmmichpkcdgpdemadj)
 2.  **Install from source**
-    - Download and unzip the [source code](https://github.com/Yorick-Ryu/Banana-Peel/archive/refs/heads/master.zip).
+    - Download and unzip the [source code](https://github.com/Yorick-Ryu/BananaPeel/archive/refs/heads/master.zip).
     - Open your browser's extension management page (`edge://extensions` or `chrome://extensions`).
     - Enable "Developer mode".
     - Click "Load unpacked" and select the unzipped folder.
