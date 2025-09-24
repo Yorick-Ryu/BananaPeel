@@ -46,7 +46,6 @@ export default function Home() {
           </h2>
           <p className="mt-6 max-w-2xl mx-auto text-lg text-[var(--text-secondary)]">
             告别繁琐的抠图网站，在浏览器中即时移除任何图片的背景。
-            BananaPeel 是一款为效率而生的浏览器扩展。
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <a
