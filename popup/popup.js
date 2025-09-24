@@ -14,12 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
       option.textContent = data.selectedModel;
       modelSelect.appendChild(option);
       modelSelect.value = data.selectedModel;
-      // Also fetch the full list in the background to allow changing the model
-      fetchModelsFromServer();
-    } else {
-      // Automatically fetch models if no model is saved
-      fetchModelsFromServer();
     }
+    fetchModelsFromServer();
   });
 
   // Set up tab switching
