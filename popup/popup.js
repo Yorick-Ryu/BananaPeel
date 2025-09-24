@@ -4,10 +4,22 @@ const DEFAULT_SERVER_URL = 'https://api.bp.rick216.cn';
 
 // Initialize and load settings
 document.addEventListener('DOMContentLoaded', () => {
-  // Load saved settings and then fetch models
-  loadSettings(() => {
-    // Automatically fetch models after settings are loaded
-    fetchModelsFromServer();
+  // Load saved settings and then fetch models if needed
+  loadSettings((data) => {
+    if (data.selectedModel) {
+      // If a model is already saved, display it directly
+      const modelSelect = document.getElementById('modelSelect');
+      const option = document.createElement('option');
+      option.value = data.selectedModel;
+      option.textContent = data.selectedModel;
+      modelSelect.appendChild(option);
+      modelSelect.value = data.selectedModel;
+      // Also fetch the full list in the background to allow changing the model
+      fetchModelsFromServer();
+    } else {
+      // Automatically fetch models if no model is saved
+      fetchModelsFromServer();
+    }
   });
 
   // Set up tab switching
@@ -40,7 +52,7 @@ function loadSettings(callback) {
     
     // Call the callback function if provided
     if (callback && typeof callback === 'function') {
-      callback();
+      callback(data);
     }
   });
 }
