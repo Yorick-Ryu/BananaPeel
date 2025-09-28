@@ -85,7 +85,7 @@ Gemini等AI生图后处理
 🤖 AI用户：各种AI生图工具的后处理
 
 
-#浏览器插件 #抠图 #AI生图 #开源  #图标制作 #rembg #NanoBanana #Gemini #香蕉皮 #BananaPeel
+#浏览器插件 #抠图 #AI生图 #开源 #图标制作 #背景去除 #nanobanana #gemini #香蕉皮 #BananaPeel
 
 👨‍💻 作为开发者，这个插件真的解决了我的痛点！
 💬 有技术问题欢迎在评论区讨论～
