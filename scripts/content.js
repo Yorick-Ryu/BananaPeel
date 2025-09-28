@@ -39,22 +39,12 @@ function showOrUpdateModal(content, isUpdate = false) {
       </div>`;
     document.body.appendChild(modal);
 
-    const handleOutsideClick = (e) => {
-      const modalContent = document.querySelector(".banana-peel-modal-content");
-      if (modalContent && !modalContent.contains(e.target)) {
-        closeModal();
-        document.removeEventListener("click", handleOutsideClick);
-      }
-    };
-
     const closeModal = () => {
       const modalElement = document.getElementById("banana-peel-modal");
       if (modalElement) {
         modalElement.remove();
         // Remove keyboard event listener when modal is closed
         document.removeEventListener("keydown", handleKeyDown);
-        // Remove outside click listener
-        document.removeEventListener("click", handleOutsideClick);
       }
     };
 
@@ -65,10 +55,6 @@ function showOrUpdateModal(content, isUpdate = false) {
     };
 
     document.getElementById("banana-peel-close-action").addEventListener("click", closeModal);
-    
-    // Since the modal background now has pointer-events: none, 
-    // we need to handle clicks outside the modal content differently
-    document.addEventListener("click", handleOutsideClick);
 
     // Add keyboard event listener for Esc key
     document.addEventListener("keydown", handleKeyDown);
