@@ -2,6 +2,9 @@
 const DEFAULT_MODEL = 'background-remover';
 const DEFAULT_SERVER_URL = 'https://api.bp.rick216.cn';
 
+let modalWindowId = null;
+let lastImageUrl = null;
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "removeBackground",
@@ -16,6 +19,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Handle reprocess request from content script
         processImage(request.imageUrl, sender.tab.id, true); // Mark as reprocess
         sendResponse({ success: true });
+    } else if (request.action === 'reprocessImage') {
+        if (lastImageUrl) {
+            processImage(lastImageUrl, sender.tab.id, true);
+        }
+        sendResponse({ success: true });
     } else if (request.action === 'downloadImage') {
         chrome.downloads.download({
             url: request.imageUrl,
@@ -23,18 +31,66 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             saveAs: true
         });
         sendResponse({ success: true });
+    } else if (request.action === "showModal") {
+        showOrUpdateModal(request.content, request.showButtons);
+        sendResponse({ success: true });
     }
     return true; // Keep message channel open for async response
 });
 
+function showOrUpdateModal(content, showButtons = false) {
+    const width = 400;
+    const height = 460;
+    if (modalWindowId) {
+        chrome.windows.update(modalWindowId, { focused: true });
+        // Use a timeout to ensure the window is focused before sending the message
+        setTimeout(() => {
+            chrome.runtime.sendMessage({ action: "updateContent", content: content, showButtons: showButtons });
+        }, 100);
+    } else {
+        chrome.windows.getLastFocused({ populate: true }, (lastWindow) => {
+            const top = Math.round(lastWindow.top + (lastWindow.height - height) / 2);
+            const left = Math.round(lastWindow.left + (lastWindow.width - width) / 2);
+
+            chrome.windows.create({
+                url: chrome.runtime.getURL("popup/modal.html"),
+                type: "popup",
+                width: width,
+                height: height,
+                left: left,
+                top: top,
+                focused: true
+            }, (win) => {
+                modalWindowId = win.id;
+                
+                chrome.windows.onRemoved.addListener(function listener(windowId) {
+                    if (windowId === modalWindowId) {
+                        modalWindowId = null;
+                        chrome.windows.onRemoved.removeListener(listener);
+                    }
+                });
+
+                // Wait for the window to load before sending the content
+                setTimeout(() => {
+                    chrome.runtime.sendMessage({ action: "updateContent", content: content, showButtons: showButtons });
+                }, 300);
+            });
+        });
+    }
+}
+
 // Function to process image
 async function processImage(imageUrl, tabId, isReprocess = false) {
+  lastImageUrl = imageUrl;
   // Show modal with loading indicator first for better UX
-  chrome.tabs.sendMessage(tabId, { 
-    action: "showLoadingModal",
-    imageUrl: imageUrl,
-    isReprocess: isReprocess
-  });
+  const loadingContent = `
+    <div class="banana-peel-loading">
+        <p>${chrome.i18n.getMessage('processingImage', 'Processing image...')}</p>
+        <div class="banana-peel-loader"></div>
+    </div>
+  `;
+  showOrUpdateModal(loadingContent, false);
+
 
   try {
     const data = await chrome.storage.sync.get(['serverUrl', 'selectedModel']);
@@ -65,19 +121,23 @@ async function processImage(imageUrl, tabId, isReprocess = false) {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64data = reader.result;
-      chrome.tabs.sendMessage(tabId, {
-        action: "updateModalWithImage",
-        imageUrl: base64data
-      });
+      const imageContent = `
+        <div class="banana-peel-success">
+            <img id="banana-peel-result-image" src="${base64data}" alt="${chrome.i18n.getMessage('processedImage', 'Processed Image')}">
+        </div>
+      `;
+      showOrUpdateModal(imageContent, true);
     };
     reader.readAsDataURL(processedBlob);
 
   } catch (error) {
     console.error("Error:", error);
-    chrome.tabs.sendMessage(tabId, {
-        action: "showErrorInModal",
-        error: error.toString()
-    });
+    const errorContent = `
+        <div class="banana-peel-error">
+            <p>${chrome.i18n.getMessage('errorOccurred', 'An error occurred')}: ${error.toString()}</p>
+        </div>
+    `;
+    showOrUpdateModal(errorContent, false);
   }
 }
 

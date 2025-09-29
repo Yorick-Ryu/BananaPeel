@@ -1,167 +1,19 @@
-function showOrUpdateModal(content, isUpdate = false) {
-  let modal = document.getElementById("banana-peel-modal");
-  const modalBody = modal ? modal.querySelector(".banana-peel-modal-body") : null;
+// This script is now largely redundant, as the modal is created by the background script.
+// However, we still need to listen for the context menu click and forward the request to the background script.
 
-  if (modal && modalBody && isUpdate) {
-    // If modal exists and this is an update, just change the body content
-    modalBody.innerHTML = content;
-    
-    // Reset action buttons to their default state
-    const reprocessAction = document.getElementById("banana-peel-reprocess-action");
-    const downloadAction = document.getElementById("banana-peel-download-action");
-    if (reprocessAction) reprocessAction.style.display = "none";
-    if (downloadAction) downloadAction.style.display = "none";
-  } else {
-    // If modal doesn't exist, create it from scratch
-    if (modal) {
-      modal.remove();
-    }
-    
-    modal = document.createElement("div");
-    modal.id = "banana-peel-modal";
-    modal.className = "banana-peel-modal";
-    modal.innerHTML = `
-      <div class="banana-peel-modal-content">
-        <div class="banana-peel-modal-header">
-          <div class="banana-peel-title">
-            <img src="${chrome.runtime.getURL("icons/icon128.png")}" class="banana-peel-icon">
-            <span>${getLocalizedMessage('extName', 'Banana Peel')}</span>
-          </div>
-          <div class="banana-peel-actions">
-            <span id="banana-peel-reprocess-action" style="display: none;" title="${getLocalizedMessage('reprocess', 'Reprocess')}">&#x21bb;</span>
-            <span id="banana-peel-download-action" style="display: none;" title="Download">&#x2913;</span>
-            <span id="banana-peel-close-action" title="Close">&times;</span>
-          </div>
-        </div>
-        <div class="banana-peel-modal-body">
-          ${content}
-        </div>
-      </div>`;
-    document.body.appendChild(modal);
+// The background script will inject this file, but the main logic is now in background.js.
+// We can keep this file for potential future use or for logic that *must* run in the page context.
 
-    const closeModal = () => {
-      const modalElement = document.getElementById("banana-peel-modal");
-      if (modalElement) {
-        modalElement.remove();
-        // Remove keyboard event listener when modal is closed
-        document.removeEventListener("keydown", handleKeyDown);
-      }
-    };
+// For now, we can simplify this file greatly. The background script handles all modal logic.
+// The only thing that might be needed is to trigger the initial processing from a page context,
+// but the current implementation starts from the context menu, which is handled by the background script.
 
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    };
-
-    document.getElementById("banana-peel-close-action").addEventListener("click", closeModal);
-
-    // Add keyboard event listener for Esc key
-    document.addEventListener("keydown", handleKeyDown);
-
-    makeDraggable(modal.querySelector(".banana-peel-modal-content"), modal.querySelector(".banana-peel-modal-header"));
-  }
-}
-
-function makeDraggable(element, dragHandle) {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  
-  dragHandle.onmousedown = dragMouseDown;
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    element.style.top = (element.offsetTop - pos2) + "px";
-    element.style.left = (element.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-
-// Global variable to store current image URL for reprocessing
-var currentImageUrl = null;
-
-// Get localized messages
-function getLocalizedMessage(key, defaultText) {
-  try {
-    return chrome.i18n.getMessage(key) || defaultText;
-  } catch (error) {
-    return defaultText;
-  }
-}
-
+// Let's leave a placeholder listener in case we need to communicate from the page in the future.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "showLoadingModal") {
-    // Store the current image URL for reprocessing
-    currentImageUrl = request.imageUrl;
-    
-    const loadingContent = `
-      <div class="banana-peel-loading">
-        <p>${getLocalizedMessage('processingImage', 'Processing image...')}</p>
-        <div class="banana-peel-loader"></div>
-      </div>
-    `;
-    
-    // If this is a reprocess, update existing modal; otherwise create new one
-    const isUpdate = request.isReprocess || false;
-    showOrUpdateModal(loadingContent, isUpdate);
-  } else if (request.action === "updateModalWithImage") {
-    const imageContent = `
-      <div class="banana-peel-success">
-        <img id="banana-peel-result-image" src="${request.imageUrl}" alt="${getLocalizedMessage('processedImage', 'Processed Image')}">
-      </div>
-    `;
-    showOrUpdateModal(imageContent, true); // Update existing modal
-
-    // Show and setup download action
-    const downloadAction = document.getElementById("banana-peel-download-action");
-    downloadAction.style.display = "inline";
-    downloadAction.onclick = () => {
-      chrome.runtime.sendMessage({
-        action: "downloadImage",
-        imageUrl: request.imageUrl
-      });
-    };
-
-    // Show and setup reprocess action
-    const reprocessAction = document.getElementById("banana-peel-reprocess-action");
-    if (currentImageUrl) {
-      reprocessAction.style.display = "inline";
-      reprocessAction.onclick = () => {
-        // Send message to background script to reprocess the image
-        chrome.runtime.sendMessage({
-          action: "processImage",
-          imageUrl: currentImageUrl
-        });
-      };
-    }
-  } else if (request.action === "showErrorInModal") {
-    const errorContent = `
-      <div class="banana-peel-error">
-        <p>${getLocalizedMessage('errorOccurred', 'An error occurred')}: ${request.error}</p>
-      </div>
-    `;
-    showOrUpdateModal(errorContent, true); // Update existing modal
+  // The background script now handles all modal actions.
+  // This content script is no longer responsible for showing, updating, or hiding modals.
+  // We'll leave this listener here in case we need to add page-specific interactions later.
+  if (request.action === "some_future_action") {
+    console.log("Action received in content script:", request);
   }
 });

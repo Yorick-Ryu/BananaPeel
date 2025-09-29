@@ -34,7 +34,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "scripts/modal.css", "icons/icon128.png" ],
+      "resources": [ "scripts/modal.css", "icons/icon128.png", "popup/modal.html", "popup/modal.js" ],
       "matches": [ "<all_urls>" ]
     }
   ],
