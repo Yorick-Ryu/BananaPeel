@@ -17,6 +17,12 @@
   "connectionFailed": {
     "message": "Connection failed"
   },
+  "workflowsTab": {
+    "message": "Workflows"
+  },
+  "backgroundTab": {
+    "message": "Background"
+  },
   "settingsTab": {
     "message": "Settings"
   },
@@ -26,8 +32,11 @@
   "settingsTitle": {
     "message": "Settings"
   },
-  "settingsFeatureExplanation": {
-    "message": "Configure server address and AI model. Changes will be applied immediately to the extension."
+  "workflowsExplanation": {
+    "message": "Configure your image processing pipeline. Enable steps to be executed when you click 'Apply Workflow' in the context menu."
+  },
+  "backgroundExplanation": {
+    "message": "Configure the AI service used for background removal. You can host your own server or use the default one."
   },
   "serverUrlLabel": {
     "message": "Server Address"
@@ -55,6 +64,30 @@
   },
   "removeBackground": {
     "message": "Remove Background"
+  },
+  "removeWatermark": {
+    "message": "Remove Gemini Watermark"
+  },
+  "applyWorkflow": {
+    "message": "Apply Workflow"
+  },
+  "workflowsTitle": {
+    "message": "Workflow Settings"
+  },
+  "workflowRemoveWatermark": {
+    "message": "Remove Gemini Watermark"
+  },
+  "workflowRemoveBackground": {
+    "message": "Remove Background"
+  },
+  "stepWatermark": {
+    "message": "Removing Gemini watermark..."
+  },
+  "stepBackground": {
+    "message": "Removing background..."
+  },
+  "stepComplete": {
+    "message": "Processing complete"
   },
   "reprocess": {
     "message": "Reprocess"

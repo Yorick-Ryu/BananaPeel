@@ -31,9 +31,7 @@
 
 body {
   width: 450px;
-  /* Increased width */
   height: 400px;
-  /* Set a fixed height */
   padding: 0;
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
@@ -51,7 +49,7 @@ body {
 
 /* Sidebar styles */
 .sidebar {
-  width: 120px;
+  width: 140px;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
   padding: 16px 0;
@@ -259,6 +257,102 @@ button:hover {
   accent-color: var(--primary-color);
 }
 
+/* Row container for multiple checkboxes in one line */
+.checkbox-group-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.checkbox-group-row .checkbox-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.checkbox-group-row .checkbox-group label {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Tooltip icon styles */
+.tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin-left: 2px;
+  color: var(--text-secondary);
+  cursor: help;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip-icon:hover {
+  opacity: 1;
+}
+
+.tooltip-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+}
+
+/* Adjust tooltip position when it would overflow to the right */
+.checkbox-group .tooltip-icon:last-child .tooltip-text {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+}
+
+/* Keep arrow at the same position for right-aligned tooltips */
+.checkbox-group .tooltip-icon:last-child .tooltip-text::after {
+  left: auto;
+  right: 3px;
+  transform: none;
+}
+
+.tooltip-icon:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-text {
+    background-color: rgba(50, 50, 50, 0.95);
+  }
+
+  .tooltip-text::after {
+    border-color: transparent transparent rgba(50, 50, 50, 0.95) transparent;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .checkbox-group input[type="checkbox"] {
     background-color: var(--input-bg);
@@ -355,4 +449,21 @@ button:hover {
   text-decoration: underline;
 }
 
+/* Workflow Sections */
+.settings-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
 
+.settings-section h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--text-color);
+}
+
+.workflow-option {
+  margin-bottom: 10px;
+}

@@ -38,14 +38,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadSettings(callback) {
   chrome.storage.sync.get([
     'serverUrl',
-    'selectedModel'
+    'selectedModel',
+    'workflowRemoveWatermark',
+    'workflowRemoveBackground'
   ], (data) => {
     // Server URL setting
     document.getElementById('serverUrl').value = data.serverUrl || DEFAULT_SERVER_URL;
-    
+
+    // Workflow settings
+    document.getElementById('workflowRemoveWatermark').checked = data.workflowRemoveWatermark !== false; // Default true
+    document.getElementById('workflowRemoveBackground').checked = data.workflowRemoveBackground === true; // Default false
+
     // Store the selected model for later use in fetchModelsFromServer
     window.savedSelectedModel = data.selectedModel;
-    
+
     // Call the callback function if provided
     if (callback && typeof callback === 'function') {
       callback(data);
@@ -110,6 +116,10 @@ function setupAutoSave() {
     fetchModelsFromServer(); // Re-fetch models when server URL changes
   }, 500));
   modelSelect.addEventListener('change', saveSettings);
+
+  // Workflow checkboxes
+  document.getElementById('workflowRemoveWatermark').addEventListener('change', saveSettings);
+  document.getElementById('workflowRemoveBackground').addEventListener('change', saveSettings);
 }
 
 // Debounce function to prevent too many saves on text input
@@ -133,7 +143,7 @@ async function fetchModelsFromServer() {
   const connectionStatus = document.getElementById('connectionStatus');
   const modelSelect = document.getElementById('modelSelect');
   const serverUrl = document.getElementById('serverUrl').value.trim();
-  
+
   if (!serverUrl) {
     // Don't show error for empty server URL on startup
     return;
@@ -151,19 +161,19 @@ async function fetchModelsFromServer() {
 
     if (response.ok) {
       const data = await response.json();
-      
+
       // Extract models array from response - expecting {"models": [...]} format
       const models = data.models;
-      
+
       // Clear existing options except the default one
       const currentValue = modelSelect.value;
       modelSelect.innerHTML = '';
-      
+
       // Add models to dropdown
       if (Array.isArray(models) && models.length > 0) {
         models.forEach(model => {
           const option = document.createElement('option');
-          
+
           // Handle both old format (string) and new format (object with name and description)
           if (typeof model === 'string') {
             // Old format: model is just a string
@@ -172,16 +182,16 @@ async function fetchModelsFromServer() {
           } else if (model && model.name) {
             // New format: model is an object with name and description
             option.value = model.name;
-            const description =  model.desc;
+            const description = model.desc;
             option.textContent = model.name + (description ? ` (${description})` : '') + (model.name === DEFAULT_MODEL ? chrome.i18n.getMessage('defaultModel') : '');
           }
-          
+
           modelSelect.appendChild(option);
         });
-        
+
         // Extract model names for comparison
         const modelNames = models.map(model => typeof model === 'string' ? model : model.name);
-        
+
         // Restore previous selection from storage if it still exists
         if (window.savedSelectedModel && modelNames.includes(window.savedSelectedModel)) {
           modelSelect.value = window.savedSelectedModel;
@@ -196,10 +206,10 @@ async function fetchModelsFromServer() {
             modelSelect.value = modelNames[0];
           }
         }
-        
+
         // Save the updated model selection
         saveSettings();
-        
+
         // Hide status on success
         connectionStatus.style.display = 'none';
       } else {
@@ -225,7 +235,7 @@ function showError(message) {
 function loadI18nText() {
   // Get current UI language
   const currentLang = chrome.i18n.getUILanguage();
-  
+
   // Show sponsor tab only for Chinese language
   const sponsorTabBtn = document.querySelector('.sponsor-tab-btn');
   if (sponsorTabBtn) {
@@ -236,13 +246,20 @@ function loadI18nText() {
   document.getElementById('extTitle').textContent = chrome.i18n.getMessage('extName');
 
   // Tab labels
-  document.getElementById('settingsTabLabel').textContent = chrome.i18n.getMessage('settingsTab');
+  document.getElementById('workflowsTabLabel').textContent = chrome.i18n.getMessage('workflowsTab');
+  document.getElementById('backgroundTabLabel').textContent = chrome.i18n.getMessage('backgroundTab');
   document.getElementById('sponsorTabLabel').textContent = chrome.i18n.getMessage('sponsorTab');
   document.getElementById('sponsorTabTitle').textContent = chrome.i18n.getMessage('sponsorTab');
 
-  // Settings tab
-  document.getElementById('settingsTitle').textContent = chrome.i18n.getMessage('settingsTitle');
-  document.getElementById('settingsFeatureExplanation').textContent = chrome.i18n.getMessage('settingsFeatureExplanation');
+  // Workflows tab
+  document.getElementById('workflowsTitle').textContent = chrome.i18n.getMessage('workflowsTitle');
+  document.getElementById('workflowsFeatureExplanation').textContent = chrome.i18n.getMessage('workflowsExplanation');
+  document.getElementById('workflowRemoveWatermarkLabel').textContent = chrome.i18n.getMessage('workflowRemoveWatermark');
+  document.getElementById('workflowRemoveBackgroundLabel').textContent = chrome.i18n.getMessage('workflowRemoveBackground');
+
+  // Background tab
+  document.getElementById('backgroundTitle').textContent = chrome.i18n.getMessage('backgroundTab');
+  document.getElementById('backgroundFeatureExplanation').textContent = chrome.i18n.getMessage('backgroundExplanation');
   document.getElementById('serverUrlLabel').textContent = chrome.i18n.getMessage('serverUrlLabel');
   document.getElementById('serverUrlHint').textContent = chrome.i18n.getMessage('serverUrlHint');
   document.getElementById('modelSelectLabel').textContent = chrome.i18n.getMessage('modelSelectLabel');
@@ -255,17 +272,21 @@ function loadI18nText() {
   }
 }
 
-// Function to save settings
 function saveSettings() {
   // Collect settings
   const settings = {
     serverUrl: document.getElementById('serverUrl').value,
-    selectedModel: document.getElementById('modelSelect').value
+    selectedModel: document.getElementById('modelSelect').value,
+    workflowRemoveWatermark: document.getElementById('workflowRemoveWatermark').checked,
+    workflowRemoveBackground: document.getElementById('workflowRemoveBackground').checked
   };
 
   // Save settings and immediately apply to background script
   chrome.storage.sync.set(settings, () => {
     console.log('Settings saved automatically');
+
+    // Notify background script that settings changed
+    chrome.runtime.sendMessage({ action: 'settingsChanged' });
   });
 }
 

@@ -17,6 +17,12 @@
   "connectionFailed": {
     "message": "连接失败"
   },
+  "workflowsTab": {
+    "message": "工作流"
+  },
+  "backgroundTab": {
+    "message": "移除背景"
+  },
   "settingsTab": {
     "message": "设置"
   },
@@ -26,8 +32,11 @@
   "settingsTitle": {
     "message": "设置"
   },
-  "settingsFeatureExplanation": {
-    "message": "配置服务器地址和AI模型，修改后将立即应用到扩展程序中。"
+  "workflowsExplanation": {
+    "message": "配置您的图片处理流水线。勾选的步骤将在右键菜单点击“应用工作流”时按顺序执行。"
+  },
+  "backgroundExplanation": {
+    "message": "配置用于背景移除的 AI 服务。您可以设置自己的服务器地址或使用默认服务。"
   },
   "serverUrlLabel": {
     "message": "服务器地址"
@@ -55,6 +64,30 @@
   },
   "removeBackground": {
     "message": "移除背景"
+  },
+  "removeWatermark": {
+    "message": "移除 Gemini 水印"
+  },
+  "applyWorkflow": {
+    "message": "应用工作流"
+  },
+  "workflowsTitle": {
+    "message": "工作流设置"
+  },
+  "workflowRemoveWatermark": {
+    "message": "去除 Gemini 水印"
+  },
+  "workflowRemoveBackground": {
+    "message": "去除背景"
+  },
+  "stepWatermark": {
+    "message": "正在去除 Gemini 水印..."
+  },
+  "stepBackground": {
+    "message": "正在去除背景..."
+  },
+  "stepComplete": {
+    "message": "处理完成"
   },
   "reprocess": {
     "message": "重新处理"
