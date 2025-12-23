@@ -89,7 +89,19 @@
   "stepComplete": {
     "message": "Processing complete"
   },
-  "reprocess": {
-    "message": "Reprocess"
+  "removeWatermarkTab": {
+    "message": "Remove Watermark"
+  },
+  "uploadImage": {
+    "message": "Upload Image"
+  },
+  "downloadProcessed": {
+    "message": "Download Image"
+  },
+  "watermarkExplanation": {
+    "message": "Upload images with Gemini watermark here, and we will automatically remove it for you."
+  },
+  "reupload": {
+    "message": "Re-upload"
   }
 }

@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set up auto-save functionality
   setupAutoSave();
 
+  // Set up watermark tab
+  setupWatermarkTab();
+
   // Set up other UI elements
   setupUIElements();
 
@@ -248,6 +251,7 @@ function loadI18nText() {
   // Tab labels
   document.getElementById('workflowsTabLabel').textContent = chrome.i18n.getMessage('workflowsTab');
   document.getElementById('backgroundTabLabel').textContent = chrome.i18n.getMessage('backgroundTab');
+  document.getElementById('removeWatermarkTabLabel').textContent = chrome.i18n.getMessage('removeWatermarkTab');
   document.getElementById('sponsorTabLabel').textContent = chrome.i18n.getMessage('sponsorTab');
   document.getElementById('sponsorTabTitle').textContent = chrome.i18n.getMessage('sponsorTab');
 
@@ -265,10 +269,96 @@ function loadI18nText() {
   document.getElementById('modelSelectLabel').textContent = chrome.i18n.getMessage('modelSelectLabel');
   document.getElementById('modelSelectHint').textContent = chrome.i18n.getMessage('modelSelectHint');
 
+  // Watermark tab
+  document.getElementById('removeWatermarkTitle').textContent = chrome.i18n.getMessage('removeWatermarkTab');
+  document.getElementById('watermarkFeatureExplanation').textContent = chrome.i18n.getMessage('watermarkExplanation');
+  document.getElementById('uploadImageLabel').textContent = chrome.i18n.getMessage('uploadImage');
+  document.getElementById('downloadProcessedLabel').textContent = chrome.i18n.getMessage('downloadProcessed');
+  document.getElementById('reuploadLabel').textContent = chrome.i18n.getMessage('reupload');
+
   // Sponsor tab
   const sponsorTitle = document.getElementById('sponsorTitle');
   if (sponsorTitle) {
     sponsorTitle.textContent = chrome.i18n.getMessage('sponsorTitle');
+  }
+}
+
+// Set up watermark tab logic
+function setupWatermarkTab() {
+  const uploadBox = document.getElementById('uploadBox');
+  const imageInput = document.getElementById('imageInput');
+  const uploadContainer = document.getElementById('uploadContainer');
+  const previewContainer = document.getElementById('previewContainer');
+  const imagePreview = document.getElementById('imagePreview');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const reuploadBtn = document.getElementById('reuploadBtn');
+  const processLoader = document.getElementById('processLoader');
+
+  uploadBox.addEventListener('click', () => imageInput.click());
+
+  imageInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Show preview and loading
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const dataUrl = event.target.result;
+      imagePreview.src = dataUrl;
+      uploadContainer.style.display = 'none';
+      previewContainer.style.display = 'flex';
+      processLoader.style.display = 'block';
+      downloadBtn.disabled = true;
+
+      try {
+        await processWatermark(dataUrl);
+      } catch (err) {
+        console.error('Processing failed:', err);
+        processLoader.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  reuploadBtn.addEventListener('click', () => {
+    imageInput.value = '';
+    uploadContainer.style.display = 'block';
+    previewContainer.style.display = 'none';
+    imagePreview.src = '';
+  });
+
+  async function processWatermark(dataUrl) {
+    const bg48 = window.BG_48_DATA;
+    const bg96 = window.BG_96_DATA;
+
+    if (!bg48 || !bg96) {
+      alert('Watermark assets missing');
+      return;
+    }
+
+    if (typeof WatermarkEngine === 'undefined') {
+      alert('WatermarkEngine not found');
+      return;
+    }
+
+    const engine = await WatermarkEngine.create(bg48, bg96);
+    const img = new Image();
+    img.onload = async () => {
+      const processedCanvas = await engine.removeWatermarkFromImage(img);
+      const resultUrl = processedCanvas.toDataURL('image/png');
+      imagePreview.src = resultUrl;
+      processLoader.style.display = 'none';
+      downloadBtn.disabled = false;
+
+      // Update download behavior
+      downloadBtn.onclick = () => {
+        chrome.runtime.sendMessage({
+          action: 'downloadImage',
+          imageUrl: resultUrl
+        });
+      };
+    };
+    img.src = dataUrl;
   }
 }
 

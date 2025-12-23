@@ -89,7 +89,19 @@
   "stepComplete": {
     "message": "处理完成"
   },
-  "reprocess": {
-    "message": "重新处理"
+  "removeWatermarkTab": {
+    "message": "去水印"
+  },
+  "uploadImage": {
+    "message": "上传图片"
+  },
+  "downloadProcessed": {
+    "message": "下载图片"
+  },
+  "watermarkExplanation": {
+    "message": "在此上传带有 Gemini 水印的图片，我们将为您自动去除水印并提供下载。"
+  },
+  "reupload": {
+    "message": "重新上传"
   }
 }

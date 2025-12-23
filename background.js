@@ -47,7 +47,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.downloads.download({
       url: request.imageUrl,
       filename: filename,
-      saveAs: true
+      saveAs: false
     });
     sendResponse({ success: true });
   } else if (request.action === 'settingsChanged') {

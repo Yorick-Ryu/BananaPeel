@@ -35,6 +35,16 @@
           <span id="workflowsTabLabel"></span>
         </button>
 
+        <button class="tab-btn" data-tab="watermark-tab" id="watermarkTabBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+            </path>
+          </svg>
+          <span id="removeWatermarkTabLabel"></span>
+        </button>
+
         <button class="tab-btn" data-tab="background-tab" id="backgroundTabBtn">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -97,6 +107,46 @@
         <div id="connectionStatus" class="form-hint error-only" style="display: none;"></div>
       </div>
 
+      <!-- Remove Watermark Tab Content -->
+      <div class="tab-content" id="watermark-tab">
+        <h2 id="removeWatermarkTitle"></h2>
+        <p class="feature-explanation" id="watermarkFeatureExplanation"></p>
+
+        <div class="upload-container" id="uploadContainer">
+          <input type="file" id="imageInput" accept="image/*" style="display: none;">
+          <div class="upload-box" id="uploadBox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p id="uploadImageLabel"></p>
+          </div>
+        </div>
+
+        <div class="preview-container" id="previewContainer" style="display: none;">
+          <div class="result-box">
+            <img id="imagePreview" alt="Preview">
+            <div class="loader" id="processLoader" style="display: none;"></div>
+          </div>
+          <div class="button-group">
+            <button id="downloadBtn" class="primary-btn" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span id="downloadProcessedLabel"></span>
+            </button>
+            <button id="reuploadBtn" class="secondary-btn">
+              <span id="reuploadLabel"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Sponsor Tab Content -->
       <div class="tab-content" id="sponsor-tab">
         <h2 id="sponsorTabTitle">Sponsor</h2>
@@ -110,6 +160,8 @@
     </div>
   </div>
 
+  <script src="../scripts/watermark_assets.js"></script>
+  <script src="../scripts/watermark.js"></script>
   <script src="popup.js"></script>
 </body>
 
