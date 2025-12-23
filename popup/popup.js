@@ -311,7 +311,7 @@ function setupWatermarkTab() {
       downloadBtn.disabled = true;
 
       try {
-        await processWatermark(dataUrl);
+        await processWatermark(dataUrl, file.name);
       } catch (err) {
         console.error('Processing failed:', err);
         processLoader.style.display = 'none';
@@ -327,7 +327,7 @@ function setupWatermarkTab() {
     imagePreview.src = '';
   });
 
-  async function processWatermark(dataUrl) {
+  async function processWatermark(dataUrl, originalFilename) {
     const bg48 = window.BG_48_DATA;
     const bg96 = window.BG_96_DATA;
 
@@ -352,9 +352,21 @@ function setupWatermarkTab() {
 
       // Update download behavior
       downloadBtn.onclick = () => {
+        let finalFilename = 'watermark-removed.png';
+        if (originalFilename) {
+          const dotIndex = originalFilename.lastIndexOf('.');
+          if (dotIndex !== -1) {
+            const name = originalFilename.substring(0, dotIndex);
+            finalFilename = `${name}_watermark_removed.png`;
+          } else {
+            finalFilename = `${originalFilename}_watermark_removed.png`;
+          }
+        }
+
         chrome.runtime.sendMessage({
           action: 'downloadImage',
-          imageUrl: resultUrl
+          imageUrl: resultUrl,
+          filename: finalFilename
         });
       };
     };

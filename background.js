@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   } else if (request.action === 'downloadImage') {
     const timestamp = getLocalTimestamp();
-    const filename = `Banana-${timestamp}.png`;
+    const filename = request.filename || `Banana-${timestamp}.png`;
     chrome.downloads.download({
       url: request.imageUrl,
       filename: filename,
