@@ -1,11 +1,18 @@
-BananaPeel is a browser extension that removes image backgrounds with one click, streamlining your workflow and enhancing productivity.
-Ideal for AI-generated images from tools like Nano Banana, it eliminates the need for third-party websites, saving you time and resources.
-Features include instant preview, multiple models powered by the rembg library, and flexible processing options with both cloud and local modes via a self-hosted rembg server.
-Perfect for developers creating app icons, content creators designing social media posts, and e-commerce businesses preparing product images, BananaPeel simplifies background removal for a wide range of applications.
+BananaPeel is a powerful browser extension designed to help you process images effortlessly. From watermark cleanup to background removal, it streamlines your AI image workflow!
 
-🛠️ How to Use
+Perfect for AI-generated images from tools like Nano Banana, Midjourney, and Gemini. It eliminates the need for third-party websites, allowing you to process images directly on the current page, saving you significant time and effort.
 
-1.  Right-click on any image on a webpage.
-2.  Select "Remove Background".
-3.  Wait a few seconds for the processing to complete.
-4.  Download the processed image with a transparent background.
+✨ Key Features:
+
+- 💧 Watermark Removal: Specialized tool to remove Gemini watermarks (Offline algorithm, runs entirely in your browser to protect your privacy).
+- 🖼️ Background Removal: Right-click any image to instantly remove its background using AI. Supports multiple processing models.
+- 🚀 Automated Workflows: Combine steps like "Watermark Removal + Background Removal" into a single command for ultra-fast results.
+- ⚡ One-Click Operation: Process images directly from the context menu or popup without downloading and re-uploading.
+- 🎨 Instant Preview: Results are displayed in a clean, draggable popup window for immediate download with transparent backgrounds.
+
+🛠️ How to Use:
+
+1. Right-click any image on a webpage.
+2. Select "Remove Background", "Remove Gemini Watermark", or "Apply Workflow" from the menu.
+3. The result will appear instantly in a popup window for you to preview and download.
+4. You can also click the extension icon to configure workflows or manually upload local images for processing.
