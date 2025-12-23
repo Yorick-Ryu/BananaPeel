@@ -16,6 +16,21 @@ chrome.runtime.onInstalled.addListener(() => {
   createContextMenu();
 });
 
+// Helper function to get local time zone timestamp
+function getLocalTimestamp() {
+  const now = new Date();
+  // Format date in local timezone
+  const options = {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false
+  };
+  const localTime = now.toLocaleString('zh-CN', options)
+    .replace(/[\/\s:]/g, '-')
+    .replace(',', '');
+  return localTime;
+}
+
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'processImage') {
@@ -27,9 +42,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     runWorkflow(request.imageUrl, sender.tab.id, true);
     sendResponse({ success: true });
   } else if (request.action === 'downloadImage') {
+    const timestamp = getLocalTimestamp();
+    const filename = `Banana-${timestamp}.png`;
     chrome.downloads.download({
       url: request.imageUrl,
-      filename: request.filename || 'banana-peel-image.png',
+      filename: filename,
       saveAs: true
     });
     sendResponse({ success: true });

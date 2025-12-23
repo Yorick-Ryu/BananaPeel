@@ -147,8 +147,7 @@ if (typeof window.bananaPeelContentScriptLoaded === 'undefined') {
       downloadAction.onclick = () => {
         chrome.runtime.sendMessage({
           action: "downloadImage",
-          imageUrl: request.imageUrl,
-          filename: currentImageData.type === 'watermark' ? 'gemini-watermark-removed.png' : 'background-removed.png'
+          imageUrl: request.imageUrl
         });
       };
 
