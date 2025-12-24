@@ -46,3 +46,10 @@ As developers and creators, we often use AI tools like Nano Banana, Midjourney, 
 ### 3. Backend Configuration (Optional)
 
 By default, the extension uses our official server `https://api.bp.rick216.cn`. For better performance or privacy, you can [host your own server](https://github.com/Yorick-Ryu/rembg-server).
+
+## 🙏 Acknowledgements
+
+This project was inspired by or uses logic from these amazing open-source projects:
+
+- [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover)
+- [GeminiWatermarkTool](https://github.com/allenk/GeminiWatermarkTool)

@@ -46,3 +46,10 @@
 ### 3. 后端配置（可选）
 
 扩展默认使用官方服务器 `https://api.bp.rick216.cn`。为了获得更佳的性能或更好的隐私保护，您可以选择[自行部署服务器](https://github.com/Yorick-Ryu/rembg-server)。
+
+## 🙏 致谢
+
+本项目受到以下优秀开源项目的启发或使用了部分逻辑：
+
+- [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover)
+- [GeminiWatermarkTool](https://github.com/allenk/GeminiWatermarkTool)
