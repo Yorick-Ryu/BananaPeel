@@ -8,7 +8,7 @@
 
 - **🖼️ Background Removal:** Right-click any image to remove its background instantly using AI.
 - **💧 Watermark Removal:** Specialized tool to remove Gemini watermarks (Offline, runs entirely in your browser).
-- **🚀 Automated Workflows:** Combine multiple steps (e.g., Watermark Removal + Background Removal) into a single "Apply Workflow" operation.
+- **🚀 Automated Workflows:** Pre-configure steps in the popup. Right-click any image and select "Apply Workflow" to execute a sequence like "Watermark Removal + Background Removal" in one go.
 - **⚡ One-Click Operation:** Process images directly from the context menu without downloading and re-uploading.
 - **🎨 Instant Preview:** Results are displayed in a clean, draggable pop-up window for immediate download.
 - **🤖 Multiple Models:** Supports various open-source models via [rembg](https://github.com/danielgatis/rembg).
