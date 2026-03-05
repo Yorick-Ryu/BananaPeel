@@ -1,14 +1,16 @@
 /**
  * Gemini Watermark Removal Utility
  * Adapted from: https://github.com/journey-ad/gemini-watermark-remover
+ * Updated to latest algorithm (v2026.03) with Noise Floor and Adaptive Gain
  */
 
 if (typeof window.WatermarkEngine === 'undefined') {
     (function (window) {
-        // Constants from blendModes.js
-        const ALPHA_THRESHOLD = 0.002;
-        const MAX_ALPHA = 0.99;
-        const LOGO_VALUE = 255;
+        // Core Constants
+        const ALPHA_NOISE_FLOOR = 3 / 255;  // Filter quantization noise from compressed capture
+        const ALPHA_THRESHOLD = 0.002;      // Minimal activation threshold
+        const MAX_ALPHA = 0.99;             // Prevent division by zero
+        const LOGO_VALUE = 255;             // White logo base value
 
         /**
          * Calculate alpha map from background captured image
@@ -22,6 +24,7 @@ if (typeof window.WatermarkEngine === 'undefined') {
                 const r = data[idx];
                 const g = data[idx + 1];
                 const b = data[idx + 2];
+                // Take maximum channel as candidate alpha signal
                 const maxChannel = Math.max(r, g, b);
                 alphaMap[i] = maxChannel / 255.0;
             }
@@ -29,25 +32,36 @@ if (typeof window.WatermarkEngine === 'undefined') {
         }
 
         /**
-         * Remove watermark using reverse alpha blending
+         * Remove watermark using reverse alpha blending with noise suppression
          */
-        function removeWatermark(imageData, alphaMap, position) {
+        function removeWatermark(imageData, alphaMap, position, options = {}) {
             const { x, y, width, height } = position;
+            const alphaGain = options.alphaGain || 1.0;
 
             for (let row = 0; row < height; row++) {
                 for (let col = 0; col < width; col++) {
                     const imgIdx = ((y + row) * imageData.width + (x + col)) * 4;
                     const alphaIdx = row * width + col;
-                    let alpha = alphaMap[alphaIdx];
 
-                    if (alpha < ALPHA_THRESHOLD) continue;
+                    const rawAlpha = alphaMap[alphaIdx];
 
-                    alpha = Math.min(alpha, MAX_ALPHA);
+                    // 1. Subtract noise floor to distinguish signal from quantization artifacts
+                    const signalAlpha = Math.max(0, (rawAlpha - ALPHA_NOISE_FLOOR)) * alphaGain;
+
+                    // 2. Performance optimization: Skip non-watermarked areas
+                    if (signalAlpha < ALPHA_THRESHOLD) continue;
+
+                    // 3. Use rawAlpha for inverse calculation for mathematical precision
+                    // while protecting against near-opaque pixels
+                    const alpha = Math.min(rawAlpha * alphaGain, MAX_ALPHA);
                     const oneMinusAlpha = 1.0 - alpha;
 
+                    // 4. Reverse blend RGB channels: original = (watermarked - alpha * logo) / (1 - alpha)
                     for (let c = 0; c < 3; c++) {
                         const watermarked = imageData.data[imgIdx + c];
                         const original = (watermarked - alpha * LOGO_VALUE) / oneMinusAlpha;
+
+                        // Clamp and round with high precision
                         imageData.data[imgIdx + c] = Math.max(0, Math.min(255, Math.round(original)));
                     }
                 }
@@ -58,6 +72,7 @@ if (typeof window.WatermarkEngine === 'undefined') {
          * Detect watermark configuration based on image size
          */
         function detectWatermarkConfig(imageWidth, imageHeight) {
+            // Updated Gemini layout detection (Standard rules)
             if (imageWidth > 1024 && imageHeight > 1024) {
                 return { logoSize: 96, marginRight: 64, marginBottom: 64 };
             } else {
@@ -84,6 +99,9 @@ if (typeof window.WatermarkEngine === 'undefined') {
                 this.alphaMaps = {};
             }
 
+            /**
+             * Factories and Loaders
+             */
             static async create(bg48Data, bg96Data) {
                 const bg48 = await this.loadImage(`data:image/png;base64,${bg48Data}`);
                 const bg96 = await this.loadImage(`data:image/png;base64,${bg96Data}`);
@@ -114,7 +132,12 @@ if (typeof window.WatermarkEngine === 'undefined') {
                 return alphaMap;
             }
 
-            async removeWatermarkFromImage(image) {
+            /**
+             * Main processing entry point
+             */
+            async removeWatermarkFromImage(image, options = {}) {
+                const { alphaGain = 1.0 } = options;
+
                 const canvas = document.createElement('canvas');
                 canvas.width = image.width;
                 canvas.height = image.height;
@@ -126,7 +149,10 @@ if (typeof window.WatermarkEngine === 'undefined') {
                 const position = calculateWatermarkPosition(canvas.width, canvas.height, config);
 
                 const alphaMap = await this.getAlphaMap(config.logoSize);
-                removeWatermark(imageData, alphaMap, position);
+
+                // Perform the removal
+                removeWatermark(imageData, alphaMap, position, { alphaGain });
+
                 ctx.putImageData(imageData, 0, 0);
                 return canvas;
             }
